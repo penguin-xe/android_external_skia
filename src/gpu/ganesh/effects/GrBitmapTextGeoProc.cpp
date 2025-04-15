@@ -96,6 +96,11 @@ private:
         fragBuilder->codeAppend("half4 texColor;");
         append_multitexture_lookup(args, btgp.numTextureSamplers(),
                                    texIdx, uv.fsIn(), "texColor", &fColorSpaceXformHelper);
+        if (!fColorSpaceXformHelper.isNoop()) {
+            fragBuilder->codeAppend("texColor = ");
+            fragBuilder->appendColorGamutXform("texColor", &fColorSpaceXformHelper);
+            fragBuilder->codeAppend(";");
+        }
 
         if (btgp.fMaskFormat == MaskFormat::kARGB) {
             // modulate by color
